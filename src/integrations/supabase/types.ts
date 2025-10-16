@@ -14,7 +14,99 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_breaks: {
+        Row: {
+          break_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          break_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          break_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          created_at: string | null
+          daily_goal: number | null
+          id: string
+          reminder_enabled: boolean | null
+          reminder_interval: number | null
+          sounds_enabled: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          daily_goal?: number | null
+          id?: string
+          reminder_enabled?: boolean | null
+          reminder_interval?: number | null
+          sounds_enabled?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          daily_goal?: number | null
+          id?: string
+          reminder_enabled?: boolean | null
+          reminder_interval?: number | null
+          sounds_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      water_logs: {
+        Row: {
+          amount: number
+          id: string
+          logged_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          id?: string
+          logged_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          id?: string
+          logged_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

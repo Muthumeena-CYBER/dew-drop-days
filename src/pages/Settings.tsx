@@ -1,35 +1,28 @@
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { Bell, Trash2, Volume2 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { useHydrationSupabase } from "@/hooks/use-hydration-supabase";
+import { Bell, LogOut, Volume2 } from "lucide-react";
 
 const Settings = () => {
-  const [notifications, setNotifications] = useState(true);
-  const [sounds, setSounds] = useState(true);
-  const [reminderInterval, setReminderInterval] = useState(30);
-
-  const handleClearData = () => {
-    if (window.confirm("Are you sure you want to clear all your hydration data?")) {
-      localStorage.removeItem("hydra-data");
-      toast.success("All data cleared successfully");
-      window.location.reload();
-    }
-  };
+  const { signOut } = useAuth();
+  const { settings, updateSettings } = useHydrationSupabase();
 
   const requestNotificationPermission = async () => {
     if ("Notification" in window) {
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
-        toast.success("Notifications enabled!");
-        setNotifications(true);
+        updateSettings({ reminder_enabled: true });
       } else {
-        toast.error("Notification permission denied");
-        setNotifications(false);
+        updateSettings({ reminder_enabled: false });
       }
     }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   return (
@@ -53,27 +46,27 @@ const Settings = () => {
               </div>
               <Switch
                 id="notifications"
-                checked={notifications}
+                checked={settings.reminder_enabled}
                 onCheckedChange={(checked) => {
                   if (checked) {
                     requestNotificationPermission();
                   } else {
-                    setNotifications(false);
+                    updateSettings({ reminder_enabled: false });
                   }
                 }}
               />
             </div>
 
-            {notifications && (
+            {settings.reminder_enabled && (
               <div className="ml-8 space-y-2">
                 <Label className="text-sm">Reminder Interval (minutes)</Label>
                 <div className="flex gap-2">
-                  {[30, 45, 60, 90].map((interval) => (
+                  {[2, 30, 45, 60, 90].map((interval) => (
                     <Button
                       key={interval}
-                      variant={reminderInterval === interval ? "default" : "outline"}
+                      variant={settings.reminder_interval === interval ? "default" : "outline"}
                       size="sm"
-                      onClick={() => setReminderInterval(interval)}
+                      onClick={() => updateSettings({ reminder_interval: interval })}
                     >
                       {interval}
                     </Button>
@@ -96,26 +89,23 @@ const Settings = () => {
             </div>
             <Switch
               id="sounds"
-              checked={sounds}
-              onCheckedChange={setSounds}
+              checked={settings.sounds_enabled}
+              onCheckedChange={(checked) => updateSettings({ sounds_enabled: checked })}
             />
           </div>
         </div>
 
         <div className="border-t pt-6">
-          <h2 className="text-xl font-bold mb-4">Data</h2>
+          <h2 className="text-xl font-bold mb-4">Account</h2>
           
           <Button
             variant="destructive"
-            onClick={handleClearData}
+            onClick={handleSignOut}
             className="w-full"
           >
-            <Trash2 className="h-5 w-5 mr-2" />
-            Clear All Data
+            <LogOut className="h-5 w-5 mr-2" />
+            Sign Out
           </Button>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
-            This will delete all logs, streaks, and settings
-          </p>
         </div>
       </Card>
 

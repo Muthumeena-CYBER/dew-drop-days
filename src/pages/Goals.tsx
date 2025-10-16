@@ -1,20 +1,17 @@
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { useHydration } from "@/hooks/use-hydration";
+import { useHydrationSupabase } from "@/hooks/use-hydration-supabase";
 import { toast } from "sonner";
 import { Target, Save } from "lucide-react";
+import { useState } from "react";
 
 const Goals = () => {
-  const { data, setDailyGoal } = useHydration();
-  const [goal, setGoal] = useState(data.dailyGoal);
+  const { settings, updateSettings } = useHydrationSupabase();
+  const [goal, setGoal] = useState(settings.daily_goal);
 
   const handleSave = () => {
-    setDailyGoal(goal);
-    toast.success("Goal saved successfully!", {
-      description: `Your new daily goal is ${goal}ml`,
-    });
+    updateSettings({ daily_goal: goal });
   };
 
   const presetGoals = [

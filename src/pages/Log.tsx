@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useHydration } from "@/hooks/use-hydration";
+import { useHydrationSupabase } from "@/hooks/use-hydration-supabase";
 import { toast } from "sonner";
 import { Droplet, Plus } from "lucide-react";
 
 const Log = () => {
-  const { addLog } = useHydration();
+  const { addLog, logActivityBreak } = useHydrationSupabase();
   const [customAmount, setCustomAmount] = useState("");
 
   const quickAmounts = [
@@ -17,20 +17,22 @@ const Log = () => {
     { label: "XL", amount: 1000, icon: "🚰" },
   ];
 
-  const handleQuickLog = (amount: number) => {
-    addLog(amount);
+  const handleQuickLog = async (amount: number) => {
+    await addLog(amount);
+    await logActivityBreak();
     toast.success(`Added ${amount}ml to your intake!`, {
       description: "Keep up the great work! 💪",
     });
   };
 
-  const handleCustomLog = () => {
+  const handleCustomLog = async () => {
     const amount = parseInt(customAmount);
     if (isNaN(amount) || amount <= 0) {
       toast.error("Please enter a valid amount");
       return;
     }
-    addLog(amount);
+    await addLog(amount);
+    await logActivityBreak();
     toast.success(`Added ${amount}ml to your intake!`);
     setCustomAmount("");
   };

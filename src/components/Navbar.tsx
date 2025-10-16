@@ -3,10 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
+import { useAuth } from "@/hooks/use-auth";
 
 const Navbar = () => {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
 
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/" },
@@ -14,6 +16,8 @@ const Navbar = () => {
     { icon: Target, label: "Goals", path: "/goals" },
     { icon: Settings, label: "Settings", path: "/settings" },
   ];
+
+  if (!user) return null;
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">

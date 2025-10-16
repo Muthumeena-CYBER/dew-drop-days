@@ -1,12 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import HydraPet from "@/components/HydraPet";
+import { HydrationRadar } from "@/components/HydrationRadar";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { useHydration } from "@/hooks/use-hydration";
+import { useHydrationSupabase } from "@/hooks/use-hydration-supabase";
 import { Droplet, Target, TrendingUp, Award } from "lucide-react";
 
 const Dashboard = () => {
-  const { data, getTodayTotal, getHydrationPercent } = useHydration();
+  const { getTodayTotal, settings, getHydrationPercent, loading } = useHydrationSupabase();
+  const [streak, setStreak] = useState(0);
+  
   const todayTotal = getTodayTotal();
   const percent = getHydrationPercent();
 
@@ -16,6 +19,17 @@ const Dashboard = () => {
       Notification.requestPermission();
     }
   }, []);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto p-6 flex items-center justify-center min-h-[50vh]">
+        <div className="text-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-accent border-t-transparent mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading your data...</p>
+        </div>
+      </div>
+    );
+  }
 
   const stats = [
     {
@@ -27,7 +41,7 @@ const Dashboard = () => {
     {
       icon: Target,
       label: "Daily Goal",
-      value: `${data.dailyGoal}ml`,
+      value: `${settings.daily_goal}ml`,
       color: "text-primary",
     },
     {
@@ -39,7 +53,7 @@ const Dashboard = () => {
     {
       icon: Award,
       label: "Streak",
-      value: `${data.streak} days`,
+      value: `${streak} days`,
       color: "text-primary",
     },
   ];
@@ -53,7 +67,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow">
-          <HydraPet hydrationPercent={percent} streak={data.streak} />
+          <HydraPet hydrationPercent={percent} streak={streak} />
         </Card>
 
         <Card className="p-6 shadow-lg space-y-6">
@@ -80,30 +94,7 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      <Card className="p-6 shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-        <div className="space-y-2">
-          {data.logs.slice(0, 5).map((log) => (
-            <div
-              key={log.id}
-              className="flex items-center justify-between p-3 rounded-xl bg-secondary/20 hover:bg-secondary/30 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Droplet className="h-4 w-4 text-accent" />
-                <span className="font-semibold">{log.amount}ml</span>
-              </div>
-              <span className="text-sm text-muted-foreground">
-                {new Date(log.timestamp).toLocaleTimeString()}
-              </span>
-            </div>
-          ))}
-          {data.logs.length === 0 && (
-            <p className="text-center text-muted-foreground py-8">
-              No logs yet. Start tracking your hydration!
-            </p>
-          )}
-        </div>
-      </Card>
+      <HydrationRadar todayTotal={todayTotal} dailyGoal={settings.daily_goal} activityBreaks={5} />
     </div>
   );
 };
