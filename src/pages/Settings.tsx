@@ -4,6 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { useNavigate } from "react-router-dom";
 import { useHydrationSupabase } from "@/hooks/use-hydration-supabase";
 import { Bell, LogOut, Volume2, MessageCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { toast } from "sonner";
 
 const Settings = () => {
   const { signOut } = useAuth();
+  const navigate = useNavigate();
   const { settings, updateSettings } = useHydrationSupabase();
   const [apiKey, setApiKey] = useState<string>(localStorage.getItem("openai_api_key") || "");
   const [model, setModel] = useState<string>(localStorage.getItem("hydra-model") || "gpt-4o-mini");
@@ -30,6 +32,7 @@ const Settings = () => {
 
   const handleSignOut = async () => {
     await signOut();
+    navigate("/auth", { replace: true });
   };
 
   return (
