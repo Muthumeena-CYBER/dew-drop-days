@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useHydrationSupabase } from "@/hooks/use-hydration-supabase";
 import { useTheme } from "@/hooks/use-theme";
-import { MessageCircle, X, Send, Droplet } from "lucide-react";
+import { MessageCircle, X, Send, Droplet, Trash2 } from "lucide-react";
 
 type ChatMessage = {
   role: "system" | "user" | "assistant";
@@ -50,6 +50,20 @@ export default function HydraChat() {
       content: "Hi! I’m Hydra 💧 How can I help with your hydration today?"
     }
   ]);
+
+  const resetMessages = () => {
+    setMessages([
+      {
+        role: "system",
+        content:
+          "You are Hydra, a friendly hydration coach chatbot embedded in a hydration tracking app (HydraFlow). Be concise, encouraging, and practical. Use the app context where relevant: user hydration totals, daily goal, percent progress, reminders, theme. Provide short actionable answers with bullet points if helpful."
+      },
+      {
+        role: "assistant",
+        content: "Hi! I’m Hydra 💧 How can I help with your hydration today?"
+      }
+    ]);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -138,6 +152,9 @@ export default function HydraChat() {
               <div className="font-semibold">Hydra</div>
             </div>
             <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" onClick={resetMessages} aria-label="Clear chat">
+                <Trash2 className="h-4 w-4" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={() => setOpen(false)} aria-label="Close">
                 <X className="h-4 w-4" />
               </Button>

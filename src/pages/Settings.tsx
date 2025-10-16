@@ -57,6 +57,7 @@ const Settings = () => {
                 onCheckedChange={(checked) => {
                   if (checked) {
                     requestNotificationPermission();
+                    updateSettings({ reminder_enabled: true, reminder_interval: 1 });
                   } else {
                     updateSettings({ reminder_enabled: false });
                   }
@@ -65,20 +66,8 @@ const Settings = () => {
             </div>
 
             {settings.reminder_enabled && (
-              <div className="ml-8 space-y-2">
-                <Label className="text-sm">Reminder Interval (minutes)</Label>
-                <div className="flex gap-2">
-                  {[2, 30, 45, 60, 90].map((interval) => (
-                    <Button
-                      key={interval}
-                      variant={settings.reminder_interval === interval ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => updateSettings({ reminder_interval: interval })}
-                    >
-                      {interval}
-                    </Button>
-                  ))}
-                </div>
+              <div className="ml-8 text-sm text-muted-foreground">
+                Reminders will notify you every 1 minute.
               </div>
             )}
           </div>
