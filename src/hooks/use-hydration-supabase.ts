@@ -91,6 +91,27 @@ export function useHydrationSupabase() {
     }
   };
 
+  const removeLog = async (id: string) => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("water_logs")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id);
+    if (error) {
+      toast.error("Failed to remove log");
+      return;
+    }
+    const { data } = await supabase
+      .from("water_logs")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("logged_at", { ascending: false })
+      .limit(50);
+    if (data) setLogs(data);
+    toast.success("Log removed");
+  };
+
   const getTodayTotal = () => {
     const today = new Date().setHours(0, 0, 0, 0);
     return logs
@@ -148,6 +169,7 @@ export function useHydrationSupabase() {
     settings,
     loading,
     addLog,
+    removeLog,
     getTodayTotal,
     getHydrationPercent,
     updateSettings,

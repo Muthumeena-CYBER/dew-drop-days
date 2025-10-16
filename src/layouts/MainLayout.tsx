@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import HydraChat from "@/components/HydraChat";
 
 const MainLayout = () => {
   return (
@@ -8,6 +9,7 @@ const MainLayout = () => {
       <main className="flex-1">
         <Outlet />
       </main>
+      <HydraChat />
     </div>
   );
 };

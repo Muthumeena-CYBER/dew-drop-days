@@ -2,13 +2,20 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useHydrationSupabase } from "@/hooks/use-hydration-supabase";
-import { Bell, LogOut, Volume2 } from "lucide-react";
+import { Bell, LogOut, Volume2, MessageCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label as UiLabel } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const Settings = () => {
   const { signOut } = useAuth();
   const { settings, updateSettings } = useHydrationSupabase();
+  const [apiKey, setApiKey] = useState<string>(localStorage.getItem("openai_api_key") || "");
+  const [model, setModel] = useState<string>(localStorage.getItem("hydra-model") || "gpt-4o-mini");
+  const [useContextData, setUseContextData] = useState<boolean>((localStorage.getItem("hydra-context-enabled") !== "false"));
 
   const requestNotificationPermission = async () => {
     if ("Notification" in window) {
@@ -108,6 +115,8 @@ const Settings = () => {
           </Button>
         </div>
       </Card>
+
+      {/* Hydra Assistant settings removed per request */}
 
       <Card className="p-6 bg-accent/5 border-accent/20">
         <h3 className="font-semibold mb-2">About HydraFlow</h3>

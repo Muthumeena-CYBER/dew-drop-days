@@ -3,11 +3,12 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useHydrationSupabase } from "@/hooks/use-hydration-supabase";
+import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Droplet, Plus } from "lucide-react";
 
 const Log = () => {
-  const { addLog, logActivityBreak } = useHydrationSupabase();
+  const { addLog, logActivityBreak, logs, removeLog } = useHydrationSupabase();
   const [customAmount, setCustomAmount] = useState("");
 
   const quickAmounts = [
@@ -97,6 +98,31 @@ const Log = () => {
           </div>
         </div>
       </Card>
+
+      {!!logs.length && (
+        <Card className="p-6 shadow-lg space-y-4">
+          <h2 className="text-xl font-bold">Recent Logs</h2>
+          <div className="space-y-2">
+            {logs.map((log) => (
+              <div key={log.id} className="flex items-center justify-between text-sm border rounded-lg p-3">
+                <div className="flex items-center gap-3">
+                  <Droplet className="h-4 w-4 text-accent" />
+                  <div>
+                    <div className="font-medium">{log.amount} ml</div>
+                    <div className="text-muted-foreground text-xs">{new Date(log.logged_at).toLocaleString()}</div>
+                  </div>
+                </div>
+                <Button variant="outline" size="icon" onClick={async () => {
+                  await removeLog(log.id);
+                  toast.info("Entry deleted");
+                }} aria-label="Delete log">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       <Card className="p-6 bg-accent/5 border-accent/20">
         <div className="flex items-start gap-3">
